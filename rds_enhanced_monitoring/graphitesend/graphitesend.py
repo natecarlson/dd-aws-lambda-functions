@@ -13,6 +13,8 @@ import pickle
 import socket
 import struct
 import time
+import errno
+import sys
 _module_instance = None
 
 default_graphite_pickle_port = 2004
@@ -24,8 +26,12 @@ VERSION = "0.7.0"
 
 
 class GraphiteSendException(Exception):
-    pass
-
+    """Base exception class - use log.exception to log the exception"""
+    def __init__(self,message):
+        self.message = message
+        log.exception("%s" % (message))
+    def __str__(self):
+        return repr(self.message)
 
 class GraphiteClient(object):
 
@@ -169,12 +175,14 @@ class GraphiteClient(object):
         try:
             self.socket.connect(self.addr)
         except socket.timeout:
-            raise GraphiteSendException(
-                "Took over %d second(s) to connect to %s" %
-                (self.timeout_in_seconds, self.addr))
+            log.error("Took over %d second(s) to connect to %s" %self.timeout_in_seconds, self.addr)
+            sys.exit(1)
         except socket.gaierror:
-            raise GraphiteSendException(
-                "No address associated with hostname %s:%s" % self.addr)
+            log.error("No address associated with hostname %s:%s" % self.addr)
+            sys.exit(1)
+        except socket.error as error:
+            log.error("Error connecting to %s - %s" %(self.addr, error) )
+            sys.exit(1)
         except Exception as error:
             raise GraphiteSendException(
                 "unknown exception while connecting to %s - %s" %
