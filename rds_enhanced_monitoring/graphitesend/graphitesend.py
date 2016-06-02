@@ -175,7 +175,7 @@ class GraphiteClient(object):
         try:
             self.socket.connect(self.addr)
         except socket.timeout:
-            log.error("Took over %d second(s) to connect to %s" %self.timeout_in_seconds, self.addr)
+            log.error("Took over %d second(s) to connect to %s" %(self.timeout_in_seconds, self.addr) )
             sys.exit(1)
         except socket.gaierror:
             log.error("No address associated with hostname %s:%s" % self.addr)
