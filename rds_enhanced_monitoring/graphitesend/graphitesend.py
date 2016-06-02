@@ -210,7 +210,8 @@ class GraphiteClient(object):
             try:
                 self.reconnect()
                 return True
-            except GraphiteSendException:
+            except Exception:
+                log.error("Trying to autoreconnect, attempt %s" % attempt)
                 time.sleep(sleep)
                 attempt -= 1
 
@@ -356,9 +357,9 @@ class GraphiteClient(object):
         if type(value).__name__ in ['str', 'unicode']:
             value = float(value)
 
-        log.debug("metric: '%s'" % metric)
+        #log.debug("metric: '%s'" % metric)
         metric = self.clean_metric_name(metric)
-        log.debug("metric: '%s'" % metric)
+        #log.debug("metric: '%s'" % metric)
 
         message = "%s%s%s %f %d\n" % (self.prefix, metric, self.suffix,
                                       value, timestamp)
