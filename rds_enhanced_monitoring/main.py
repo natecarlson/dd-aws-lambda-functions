@@ -125,6 +125,7 @@ def _process_rds_enhanced_monitoring_message(ts, message, account, region, combi
         for key, value in process_stats.iteritems():
             # For now, require a match to "OS processes" or "RDS processes" to only match those two..
             if re.match(r"(OS|RDS) processes", process_name):
+                process_name = process_name.replace(' ', '_')
                 stats.add(instance_id,
                     'process.%s.%s' %(process_name, key), value,
                     timestamp=ts, tags=tags + process_tag, host=host_id
