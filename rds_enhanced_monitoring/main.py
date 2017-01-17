@@ -112,7 +112,7 @@ def _process_rds_enhanced_monitoring_message(ts, message, account, region, combi
             )
 
     for process_stats in message["processList"]:
-        process_name = process_stats.pop("name")
+        process_name = process_stats.pop("name").replace(' ', '_')
         process_id = process_stats.pop("id")
         process_tag = [
             "name:%s" % process_name,
@@ -124,8 +124,7 @@ def _process_rds_enhanced_monitoring_message(ts, message, account, region, combi
         # stats, use the AWS-provided dashboard?
         for key, value in process_stats.iteritems():
             # For now, require a match to "OS processes" or "RDS processes" to only match those two..
-            if re.match(r"(OS|RDS) processes", process_name):
-                process_name = process_name.replace(' ', '_')
+            if re.match(r"(OS|RDS)_processes", process_name):
                 stats.add(instance_id,
                     'process.%s.%s' %(process_name, key), value,
                     timestamp=ts, tags=tags + process_tag, host=host_id
