@@ -187,9 +187,9 @@ class Stats(object):
 
         # Connect to Graphite
         lambdalogger.info('Connecting to Graphite..')
-        graphite = graphitesend.init(graphite_server=CARBON_SERVER,system_name='',prefix=CARBON_NAMESPACE)
+        graphite = graphitesend.init(graphite_server=CARBON_SERVER,system_name='',prefix=CARBON_NAMESPACE,clean_metric_name=False)
         # If you want to test without sending any actual data, use this (dryrun=True)..
-        #graphite = graphitesend.init(graphite_server=CARBON_SERVER,system_name='',prefix=CARBON_NAMESPACE,dryrun=True)
+        #graphite = graphitesend.init(graphite_server=CARBON_SERVER,system_name='',prefix=CARBON_NAMESPACE,dryrun=True,clean_metric_name=False)
 
         # Bulk send all of our metrics to Graphite
         results = graphite.send_list(allmetrics)
